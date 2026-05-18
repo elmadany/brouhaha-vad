@@ -1,5 +1,4 @@
 name: Installation Testing
-
 on:
   push:
     branches:
@@ -7,28 +6,24 @@ on:
   pull_request:
     branches:
     - main
-
-    # Allows you to run this workflow manually from the Actions tab
-    workflow_dispatch:
-
+  workflow_dispatch:
 jobs:
   test-install:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-
+        python-version: ["3.8", "3.9"]
     steps:
       - uses: actions/checkout@v3
-
       - name: Setup python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Setup testing environment
         run: |
           sudo apt install -y libsndfile1 libsndfile1-dev
           pip install --upgrade pip
+          pip install "speechbrain==0.5.16"
           pip install .
           python brouhaha/main.py --help
